@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="sharMapper">
+	<resultMap id="sharValues" type="sharVo">
+		<result property="sharSeq" column="shar_seq"/>   <!-- 공유SEQ -->
+		<result property="nmeCardSeq" column="nmecard_seq"/> <!-- 명함SEQ -->
+		<result property="sharType" column="shar_type"/> <!-- 공유 타입 -->
+		<result property="sharCretDate" column="shar_cret_date"/>		 <!-- 공유날짜 -->
+		<result property="memSeq" column="mem_seq"/>
+		<result property="memNme" column="mem_nme"/>
+		<result property="memDepmtNme" column="mem_depmt_nme"/>
+		<result property="memPostnNme" column="mem_postn_nme"/>
+		<result property="memEmail" column="mem_email"/>
+		<result property="sharCount" column="shar_count"/>
+		<result property="gropseq" column="grop_seq"/>
+		<result property="noneSharCount" column="none_shar_count"/>
+	</resultMap>
+	
+	<resultMap id="sharSapValues" type="SharSapVo">
+		<result property="sharSearchBgnDe" column="sharSearchBgnDe"/>
+		<result property="sharSearchEndDe" column="sharSearchEndDe"/>
+		<result property="sharSearchCnd" column="sharSearchCnd"/>
+		<result property="sharSearchWrd" column="sharSearchWrd"/>
+		<result property="sharSearchAry" column="sharSearchAry"/>
+		<result property="sharSearchAfter" column="sharSearchAfter"/>
+		<result property="sharSearchBefore" column="sharSearchBefore"/>
+		<result property="sharCurrentPageNo" column="sharCurrentPageNo"/>
+		<result property="sharRecordCountPerPage" column="sharRecordCountPerPage"/>
+		<result property="sharPageSize" column="sharPageSize"/>
+		<result property="sharTotalRecordCount" column="sharTotalRecordCount"/>
+		<result property="sharTotalPageCount" column="sharTotalPageCount"/>
+		<result property="sharFirstRecordIndex" column="sharFirstRecordIndex"/>
+		<result property="sharLastRecordIndex" column="sharLastRecordIndex"/>
+		<result property="sharFirstPageNoOnPageList" column="sharFirstPageNoOnPageList"/>
+		<result property="sharLastPageNoOnPageList" column="sharLastPageNoOnPageList"/>
+	</resultMap>
+
+<!-- 공유 임시 저장 리스트 -->
+	<select id="dumpMemList"  resultMap="sharValues" parameterType="sharVo">
+	SELECT mem.mem_Seq,
+			  mem.mem_nme, 
+			  dep.depmt_nme as mem_depmt_nme,
+			  mem.mem_postn_nme, 
+			  mem.mem_email 
+	FROM dump_tb dump,mem_tb mem
+	RIGHT JOIN depmt_tb dep
+	ON mem.mem_depmt_seq=dep.depmt_seq
+	WHERE dump.shar_type='y' 
+	and mem.mem_seq = dump.mem_seq 
+	and dump.nmecard_seq = #{nmeCardSeq};
+	</select>
+	
+<!-- 전체 회원 리스트 -->
+	<select id="selectMemList"  resultMap="sharValues" parameterType="sharVo">
+		SELECT
+			mem.mem_Seq,
+			mem.mem_nme, 
+			dep.depmt_nme as mem_depmt_nme, 
+			mem.mem_postn_nme, 
+			mem.mem_email
+		FROM
+		mem_tb mem
+		RIGHT JOIN depmt_tb dep
+		ON mem.mem_depmt_seq=dep.depmt_seq
+        WHERE
+        mem.mem_seq !=#{memSeq};
+	</select>
+	
+<!-- 	공유 안하는 리스트 -->
+	<select id="nonSharMemList"  resultMap="sharValues" parameterType="sharVo">
+		SELECT  mem.mem_Seq,
+		mem.mem_nme,
+		dep.depmt_nme as mem_depmt_nme,
+		mem.mem_postn_nme,
+		mem.mem_email
+		FROM
+			mem_tb mem
+			RIGHT JOIN depmt_tb dep
+			ON mem.mem_depmt_seq=dep.depmt_seq
+			<if test="gropSeq!=0">
+			RIGHT JOIN grop_mem_tb grop
+			ON grop.mem_seq=mem.mem_seq
+	                 and grop.grop_seq=#{gropSeq}
+	                 </if>
+		WHERE
+		mem.mem_seq not in(SELECT shar.mem_seq
+									FROM shar_tb as shar
+									WHERE shar.nmecard_seq = #{nmeCardSeq}  
+									AND shar.shar_type ='Y'
+									)
+		and mem.mem_seq not in (SELECT dump.mem_seq
+										   FROM dump_tb as dump
+										   WHERE dump.nmecard_seq = #{nmeCardSeq} 
+										   AND dump.shar_type ='Y')
+		and mem.mem_seq !=#{memSeq}
+		<if test="sharSearchCnd == 1">
+	  		AND mem_nme LIKE '%' #{sharSearchWrd} '%'
+		</if>
+		<if test="sharSearchCnd == 2">
+		   AND dep.depmt_nme LIKE#{sharSearchWrd}
+		</if>	
+		LIMIT #{sharRecordCountPerPage} OFFSET #{sharFirstRecordIndex};
+	</select>
+	<!-- 	공유 안하는 리스트 카운트 -->
+	<select id="noneSharMemCount"  resultType="int" parameterType="sharVo">
+		SELECT  Count(mem.mem_Seq) as none_shar_count 
+		FROM
+				mem_tb mem
+				RIGHT JOIN depmt_tb dep
+				ON mem.mem_depmt_seq=dep.depmt_seq
+				<if test="gropSeq!=0">
+				RIGHT JOIN grop_mem_tb grop
+				ON grop.mem_seq=mem.mem_seq
+		                 and grop.grop_seq=#{gropSeq}
+		                 </if>
+		WHERE
+		mem.mem_seq not in(SELECT shar.mem_seq
+									FROM shar_tb as shar
+									WHERE shar.nmecard_seq = #{nmeCardSeq}  
+									AND shar.shar_type ='Y'
+									)
+		and mem.mem_seq not in (SELECT dump.mem_seq
+										   FROM dump_tb as dump
+										   WHERE dump.nmecard_seq = #{nmeCardSeq} 
+										   AND dump.shar_type ='Y')
+		and mem.mem_seq !=#{memSeq}
+		<if test="sharSearchCnd == 1">
+	  		AND mem_nme LIKE '%' #{sharSearchWrd}'%'
+		<if test="sharSearchCnd == 2">
+		   AND dep.depmt_nme LIKE #{sharSearchWrd}
+		</if>	
+		</if>
+		;
+	</select>
+	<!-- 	공유중인 사람 리스트 -->
+	<select id="sharMemList"  resultMap="sharValues" parameterType="sharVo">
+		SELECT  mem.mem_Seq,
+				mem.mem_nme,
+				dep.depmt_nme as mem_depmt_nme,
+                mem.mem_postn_nme,
+                mem.mem_email
+		FROM
+		mem_tb mem
+		RIGHT JOIN depmt_tb dep
+		ON mem.mem_depmt_seq=dep.depmt_seq
+	        WHERE
+	        mem.mem_seq in(SELECT shar.mem_seq
+	        							FROM shar_tb as shar
+	        							WHERE shar.nmecard_seq = #{nmeCardSeq}
+        								AND shar.shar_type ='Y'
+	        							)
+	        and mem.mem_seq !=#{memSeq}
+		<if test="sharSearchCnd == 1">
+	  		AND mem_nme LIKE '%' #{sharSearchWrd} '%'
+		</if>
+		<if test="sharSearchCnd == 2">
+		   AND dep.depmt_nme LIKE #{sharSearchWrd}
+		</if>	
+		LIMIT #{sharRecordCountPerPage} OFFSET #{sharFirstRecordIndex};
+	</select>
+	<!-- 	공유중인 사람 리스트 카운트-->
+	<select id="sharMemCount" resultType="int" parameterType="sharVo">
+		SELECT  Count(mem.mem_Seq) as shar_count 
+		FROM
+		mem_tb mem
+		RIGHT JOIN depmt_tb dep
+		ON mem.mem_depmt_seq=dep.depmt_seq
+	        WHERE
+	        mem.mem_seq in(SELECT shar.mem_seq
+	        							FROM shar_tb as shar
+	        							WHERE shar.nmecard_seq = #{nmeCardSeq}
+        								AND shar.shar_type ='Y'
+	        							)
+	        and mem.mem_seq !=#{memSeq}
+		<if test="sharSearchCnd == 1">
+	  		AND mem_nme LIKE '%' #{sharSearchWrd} '%'
+		</if>
+		<if test="sharSearchCnd == 2">
+		   AND dep.depmt_nme LIKE #{sharSearchWrd}
+		</if>	;
+	</select>
+	
+	<insert id="insertDump"  parameterType="sharVo">
+		INSERT into dump_tb(dump_seq,
+								  shar_type,
+								  mem_seq,
+								  nmeCard_seq)
+		VALUE((SELECT IFNULL(MAX(dump_seq),0)+1 FROM dump_tb as dump_seq),
+				'Y',
+				#{memSeq},
+				#{nmeCardSeq})
+	
+	</insert>
+	
+	<delete id="deleteDump"  parameterType="sharVo">
+		DELETE FROM dump_tb 
+		WHERE nmeCard_seq = #{nmeCardSeq}
+		AND mem_Seq = #{memSeq};
+	</delete>
+	
+	<insert id ="dumpToShar" parameterType="sharVo">
+	INSERT INTO SHAR_TB(shar_SEQ, 
+							   nmecard_seq, 
+							   MEM_SEQ, 
+							   SHAR_TYPE,
+							   shar_cret_date,
+							   shar_use_at_bin_type)        
+        SELECT (SELECT IFNULL(MAX(shar_seq),0) from shar_tb)+@seq := @seq+1 as seq,
+        		 nmecard_seq, 
+        		 mem_seq, 
+        		 shar_type, 
+        		 now(),
+        		 'N'
+        FROM dump_tb, 
+         		(SELECT @seq :=0)a
+        WHERE nmecard_seq = #{nmeCardSeq};
+	</insert>
+	
+	<insert id ="newSpeedSharInsert" parameterType="sharVo">
+	INSERT INTO newspeed_tb(newspeed_Seq, 
+							         send_Nme, 
+							         nmecard_firstnme, 
+							         nmecard_lastnme,
+							         newspeed_type,
+							         newspeed_date,
+							         receive_Seq) 
+        SELECT (SELECT IFNULL( max(newspeed_seq), 0) from newspeed_tb)+@seq := @seq+1 as seq,
+				mem.mem_nme,
+                nmecard.nmecard_firstnme,
+                nmecard.nmecard_lastnme,
+                'Y',
+                now(),
+                dump.mem_seq
+        
+        FROM dump_tb dump, mem_tb mem 
+			 ,nmecard_tb nmecard ,
+         		(SELECT @seq :=0)a
+        WHERE dump.nmecard_seq = #{nmeCardSeq}
+        and dump.nmecard_seq = nmecard.nmecard_seq
+		and mem.mem_seq=#{sendMemSeq};
+	</insert>
+	
+	<insert id ="newSpeedSharRels" parameterType="sharVo">
+	INSERT INTO newspeed_tb(newspeed_Seq, 
+							         send_Nme, 
+							         nmecard_firstnme, 
+							         nmecard_lastnme,
+							         newspeed_type,
+							         newspeed_date,
+							         receive_Seq) 
+		Value(        (SELECT (SELECT IFNULL( max(bear.newspeed_seq), 0)+@seq := @seq+1  from newspeed_tb as bear, (SELECT @seq :=0)a)),
+				(SELECT mem_nme FROM mem_tb where mem_Seq = #{sendMemSeq}),
+                (SELECT nmecard_firstnme FROM nmecard_tb WHERE nmecard_seq = #{nmeCardSeq}),
+                (SELECT nmecard_lastnme FROM nmecard_tb WHERE nmecard_seq = #{nmeCardSeq}),
+                'N',
+                now(),
+                #{memSeq});
+                
+                
+	</insert> 
+<!-- 	공유 해제 뉴스피드 인설트 -->
+	
+	<delete id="dumpCleaning"  parameterType="sharVo">
+		DELETE FROM dump_tb 
+		WHERE nmeCard_seq = #{nmeCardSeq};
+	</delete>
+	
+	<update id="remvSharRecv"  parameterType="sharVo">
+		UPDATE SHAR_TB
+		SET shar_type='N'
+		WHERE nmecard_seq=#{nmeCardSeq}
+		AND mem_seq=#{memSeq};
+	</update>
+	<select id="allMemList"  resultMap="sharValues" parameterType="int">
+		SELECT mem_Seq
+		FROM
+		mem_tb
+		WHERE
+		mem_seq != #{where}
+	</select>
+<!-- 	보내기 안한 사람 -->
+	<select id="noneSendMemList"  resultMap="sharValues" parameterType="map">
+SELECT  mem.mem_Seq,
+			mem.mem_nme,
+			dep.depmt_nme as mem_depmt_nme,
+	                mem.mem_postn_nme,
+	                mem.mem_email
+	FROM
+	mem_tb mem
+		RIGHT JOIN depmt_tb dep
+		ON mem.mem_depmt_seq=dep.depmt_seq
+		<if test="sharVo.gropSeq!=0">
+		RIGHT JOIN grop_mem_tb grop
+		ON grop.mem_seq=mem.mem_seq
+                 and grop.grop_seq=#{sharVo.gropSeq}
+                 </if>
+        WHERE
+        mem.mem_seq NOT IN (SELECT mem_seq
+					         FROM dump_tb
+			                         WHERE shar_type = 'C'
+			             AND            
+			                         <foreach item="item" collection="senderInfo"  separator="OR">
+					           nmecard_seq = #{item}
+						  </foreach>
+						)
+	AND mem.mem_seq!=#{sharVo.memSeq}
+		<if test="sharVo.sharSearchCnd == 1">
+	  		AND mem_nme LIKE '%' #{sharVo.sharSearchWrd} '%'
+		</if>
+		<if test="sharVo.sharSearchCnd == 2">
+		   AND dep.depmt_nme LIKE #{sharVo.sharSearchWrd}
+		</if>	
+		LIMIT #{sharVo.sharRecordCountPerPage} OFFSET #{sharVo.sharFirstRecordIndex};
+	</select>
+<!-- 	보내기 안한 사람 -->
+	<select id="noneSendMemCount"  resultType="int" parameterType="map">
+	SELECT Count(mem.mem_Seq)  as none_send_count
+	FROM
+	mem_tb mem
+		RIGHT JOIN depmt_tb dep
+		ON mem.mem_depmt_seq=dep.depmt_seq
+		<if test="sharVo.gropSeq!=0">
+		RIGHT JOIN grop_mem_tb grop
+		ON grop.mem_seq=mem.mem_seq
+                 and grop.grop_seq=#{sharVo.gropSeq}
+                 </if>
+        WHERE
+        mem.mem_seq NOT IN (SELECT mem_seq
+					         FROM dump_tb
+			                         WHERE shar_type = 'C'
+			             AND            
+			                         <foreach item="item" collection="senderInfo"  separator="OR">
+					           nmecard_seq = #{item}
+						  </foreach>
+						)
+	AND mem.mem_seq!=#{sharVo.memSeq}
+		<if test="sharSearchCnd == 1">
+	  		AND mem_nme LIKE '%' #{sharSearchWrd} '%'
+		</if>
+		<if test="sharSearchCnd == 2">
+		   AND dep.depmt_nme LIKE #{sharSearchWrd}
+		</if>	
+	</select>
+	
+<!-- 	보낼 사람 -->
+	<select id="sendMemList"  resultMap="sharValues" parameterType="map">
+	SELECT  mem.mem_Seq,
+			mem.mem_nme,
+			dep.depmt_nme as mem_depmt_nme,
+	                mem.mem_postn_nme,
+	                mem.mem_email
+	FROM
+	mem_tb mem
+	RIGHT JOIN depmt_tb dep
+	ON mem.mem_depmt_seq=dep.depmt_seq
+        WHERE
+        mem.mem_seq IN (SELECT mem_seq
+				         FROM dump_tb
+		                         WHERE shar_type = 'C'
+			             AND            
+			                         <foreach item="item" collection="senderInfo"  separator="OR">
+				            nmecard_seq = #{item}
+					  </foreach>
+					)         
+	AND mem.mem_seq!=#{sharVo.memSeq};
+		                     
+	</select>
+
+	<insert id="addSendRecv"  parameterType="sharVo">
+	INSERT into dump_tb(dump_seq,
+							  shar_type,
+							  mem_seq,
+							  nmeCard_seq)
+	VALUE((SELECT IFNULL(MAX(dump_seq),0)+1 FROM dump_tb as dump_seq),
+			'C',
+			#{memSeq},
+			#{nmeCardSeq});
+
+	</insert>
+<!-- 	공유 해제 뉴스피드 인설트 -->
+	
+	<delete id="remvSendRecv" parameterType="sharVo">
+		DELETE FROM dump_tb 
+		WHERE nmeCard_seq = #{nmeCardSeq} 
+		AND	mem_seq = #{memSeq}
+		AND shar_type = 'C';
+	</delete>	
+	<insert id ="insertSend" parameterType="map">
+	INSERT INTO comnctn_shar_tb(comnctn_shar_seq, 
+							   comnctn_seq, 
+							   mem_seq, 
+							   comnctn_shar_use_at,
+							   comnctn_shar_cret_date,
+							   comnctn_shar_use_at_bin_type)
+							  <foreach item="item" collection="senderInfo"  separator="  UNION">        
+        SELECT (SELECT IFNULL(MAX(comnctn_shar_seq),0) from comnctn_shar_tb)+@seq := @seq+1 as seq,
+        		 nmecard_seq, 
+        		 mem_seq, 
+        		 shar_type, 
+        		 now(),
+        		 'N'
+        FROM dump_tb, 
+         		(SELECT @seq :=0)a
+        WHERE nmecard_seq = #{item}
+        AND shar_type='C'
+    </foreach>
+    ;
+        </insert>
+	
+	<delete id="cancelSend" parameterType="map">
+		DELETE FROM dump_tb 
+		WHERE shar_type = 'C'
+		AND            
+	<foreach item="item" collection="senderInfo"  separator="OR">
+	nmecard_seq = #{item}
+	</foreach>
+	</delete>
+	
+	<insert id ="newSpeedSendInsert" parameterType="map">
+	INSERT INTO newspeed_tb(newspeed_Seq, 
+							         send_Nme, 
+							         nmecard_firstnme, 
+							         nmecard_lastnme,
+							         newspeed_type,
+							         newspeed_date,
+							         receive_Seq) 
+	SELECT (SELECT IFNULL( max(newspeed_seq), 0) from newspeed_tb)+@seq := @seq+1 as seq,
+				senderMem.mem_nme,
+                nmecard.nmecard_firstnme,
+                nmecard.nmecard_lastnme,
+                'C',
+                now(),
+		dump.mem_seq     
+        FROM mem_tb mem
+        RIGHT JOIN mem_tb senderMem
+        ON senderMem.mem_seq = #{sharVo.sendMemSeq},
+			nmecard_tb nmecard,
+			dump_tb dump,
+		 (SELECT @seq :=0)a
+         WHERE nmecard.nmecard_Seq =  #{sharVo.nmeCardSeq}
+         AND dump.mem_seq = mem.mem_seq
+         AND mem.mem_seq != #{sharVo.sendMemSeq}
+	;
+	</insert>	
+    
+	<update id="sharBinDelete"  parameterType="sharVo">
+		UPDATE shar_tb s,dump_tb d
+		SET s.shar_use_at_bin_type='D'
+		WHERE s.nmecard_seq=#{nmeCardSeq}
+		AND d.mem_seq=s.mem_seq
+		AND s.shar_use_at_bin_type='B';
+	</update>
+</mapper>

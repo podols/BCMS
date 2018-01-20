@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="groupMapper">
+   <resultMap id="groupValues" type="groupVo">
+      <result property="gropSeq" column="grop_seq"/>
+      <result property="gropNme" column="grop_nme"/>
+      <result property="gropCretDate" column="grop_cret_date"/>
+      <result property="gropMemSeq" column="grop_mem_seq"/>
+      <result property="gropMemCretDate" column="grop_mem_cret_date"/>
+      <result property="memSeq" column="mem_seq"/>
+      <result property="memNme" column="mem_nme"/>
+      <result property="depmtNme" column="depmt_nme"/>
+      <result property="memPostnNme" column="mem_postn_nme"/>
+      <result property="memMobil" column="mem_mobil"/>
+      <result property="memEmail" column="mem_email"/>
+   </resultMap>
+   
+   <resultMap id="mpValues" type="mpVo">
+      <result property="memSearchCnd" column="memSearchCnd"/>
+      <result property="memSearchWrd" column="memSearchWrd"/>
+      <result property="memSearchAry" column="memSearchAry"/>
+      <result property="memCurrentPageNo" column="memCurrentPageNo"/>
+      <result property="memRecordCountPerPage" column="memRecordCountPerPage"/>
+      <result property="memPageSize" column="memPageSize"/>
+      <result property="memTotalRecordCount" column="memTotalRecordCount"/>
+      <result property="memTotalPageCount" column="memTotalPageCount"/>
+      <result property="memFirstPageNoOnPageList" column="memFirstPageNoOnPageList"/>
+      <result property="memLastPageNoOnPageList" column="memLastPageNoOnPageList"/>
+      <result property="memFirstRecordIndex" column="memFirstRecordIndex"/>
+      <result property="memLastRecordIndex" column="memLastRecordIndex"/>
+   </resultMap>
+   
+
+     <!-- 그룹명 등록 -->
+      <insert id="groupInsert" parameterType="groupVo">
+         INSERT 
+         INTO 
+         grop_tb(
+         	grop_seq
+         	, grop_nme
+         	, mem_seq
+         	, grop_cret_date)
+         VALUES(
+         	(SELECT IFNULL(MAX(grop_seq),0)+1 FROM grop_tb AS a)
+         	, #{gropNme}
+         	, #{memSeq}
+         	, SYSDATE());
+      </insert>
+      
+      <!-- 그룹명 조회 -->
+      <select id="groplist" parameterType="groupVo" resultMap="groupValues">
+         SELECT *
+         FROM 
+         	grop_tb
+         WHERE 
+         	mem_seq = #{memSeq};
+      </select>
+      
+      <!--그룹 리스트 조회-->
+      <select id="groupWholeList" parameterType="groupVo" resultMap="groupValues">
+      <!-- 그룹 리스트 조건 조회 -->
+      <if test="gropSeq != 0">
+         SELECT 
+         	e.grop_mem_seq
+            , m.mem_nme
+          	, d.depmt_nme
+          	, m.mem_postn_nme
+          	, m.mem_email
+       	    , CASE CHAR_LENGTH(m.mem_mobil)
+			  WHEN '11' THEN concat(LEFT(m.mem_mobil,3),'-',SUBSTRING(m.mem_mobil,4,4),'-',RIGHT(m.mem_mobil,4))
+              WHEN '10' THEN concat(LEFT(m.mem_mobil,3),'-',SUBSTRING(m.mem_mobil,4,3),'-',RIGHT(m.mem_mobil,4))
+              else '없음' 
+              end as mem_mobil
+          	, m.mem_seq
+         FROM 
+         	grop_mem_tb e
+         LEFT JOIN mem_tb m ON e.mem_seq = m.mem_seq
+         LEFT JOIN depmt_tb d ON d.depmt_seq = m.mem_depmt_seq
+         WHERE 
+         	e.grop_seq = #{gropSeq}
+         <if test="memSearchCnd == 0">
+              AND m.mem_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+         </if>
+         <if test="memSearchCnd == 1">
+            AND d.depmt_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+         </if>   
+         <if test="memSearchCnd == 2">
+            AND m.mem_postn_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+         </if>
+           <if test="memSearchAry == 0">
+            ORDER BY m.mem_nme ASC
+         </if>
+         <if test="memSearchAry == 1">
+            ORDER BY d.depmt_nme ASC
+         </if>
+         <if test="memSearchAry == 2">
+            ORDER BY m.mem_postn_nme ASC
+         </if>
+            LIMIT #{memRecordCountPerPage} OFFSET #{memFirstRecordIndex};
+      </if>
+      
+      <!--전체 조회-->
+      <if test="gropSeq == 0">
+         SELECT 
+            mem_nme
+            , depmt_nme
+            , mem_postn_nme
+            , mem_email
+            , CASE CHAR_LENGTH(mem_mobil)
+			  WHEN '11' THEN concat(LEFT(mem_mobil,3),'-',SUBSTRING(mem_mobil,4,4),'-',RIGHT(mem_mobil,4))
+              WHEN '10' THEN concat(LEFT(mem_mobil,3),'-',SUBSTRING(mem_mobil,4,3),'-',RIGHT(mem_mobil,4))
+              else '없음' 
+              end as mem_mobil
+            , mem_seq
+         FROM 
+     		mem_tb m
+            , depmt_tb d
+         WHERE 
+            m.mem_depmt_seq = d.depmt_seq
+         AND 
+            m.mem_seq != #{memSeq}
+         <if test="memSearchCnd == 0">
+              AND m.mem_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+         </if>
+         <if test="memSearchCnd == 1">
+            AND d.depmt_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+         </if>   
+         <if test="memSearchCnd == 2">
+            AND m.mem_postn_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+         </if>
+          <if test="memSearchAry == 0">
+            ORDER BY m.mem_nme ASC
+         </if>
+         <if test="memSearchAry == 1">
+            ORDER BY d.depmt_nme ASC
+         </if>
+         <if test="memSearchAry == 2">
+            ORDER BY m.mem_postn_nme ASC
+         </if>
+         LIMIT #{memRecordCountPerPage} OFFSET #{memFirstRecordIndex};
+      </if>
+      </select>
+      
+      
+      <!-- 그룹 레코드 검색 -->
+      <select id="selectGroupCount" parameterType="groupVo" resultType="int">
+      <!-- 그룹리스트 전체 레코드 검색 -->
+      <if test="gropSeq == 0">
+      SELECT
+         COUNT(mem_seq) AS selectGroupCount
+      FROM 
+         mem_tb m
+        , depmt_tb d
+      WHERE 
+         m.mem_depmt_seq = d.depmt_seq
+      
+      <if test="memSearchCnd == 0">
+           AND m.mem_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+      </if>
+      <if test="memSearchCnd == 1">
+         AND d.depmt_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+      </if>   
+      <if test="memSearchCnd == 2">
+         AND m.mem_postn_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+      </if>
+      AND m.mem_seq != #{memSeq}
+      ;
+      </if>
+        <!-- 그룹리스트 조건 레코드 검색 -->
+      <if test="gropSeq != 0">
+	      SELECT 
+	      	COUNT(m.mem_seq) AS selectGroupCount
+	      FROM 
+	        grop_mem_tb e
+	      LEFT JOIN mem_tb m ON e.mem_seq = m.mem_seq
+	      LEFT JOIN depmt_tb d ON d.depmt_seq = m.mem_depmt_seq
+	      WHERE e.grop_seq = #{gropSeq}
+      <if test="memSearchCnd == 0">
+           AND m.mem_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+      </if>
+      <if test="memSearchCnd == 1">
+         AND d.depmt_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+      </if>   
+      <if test="memSearchCnd == 2">
+         AND m.mem_postn_nme LIKE CONCAT ('%', #{memSearchWrd},'%')
+      </if>
+         ;
+      </if>
+   </select>
+   
+   <!-- 그룹회원 추가 -->
+   <insert id="groupMemInsert" parameterType="groupVo">
+      	 INSERT 
+         INTO 
+         grop_mem_tb(
+         	grop_mem_seq
+         	, grop_seq
+         	, mem_seq)
+         VALUES(
+         	(SELECT IFNULL(MAX(grop_mem_seq),0)+1 FROM grop_mem_tb AS a)
+         	, #{gropSeq}
+         	, #{memSeq});
+   </insert>
+   
+   <!-- 그룹명 추가하게 되면 똑같은 사람 삭제 -->
+   <delete id="groupCleaner" parameterType="groupVo">
+		DELETE FROM grop_mem_tb 
+		WHERE mem_seq = #{memSeq}
+		AND grop_seq =  #{gropSeq};
+   </delete>
+   
+   <!-- 그룹 멤버 전체 삭제 -->
+   <delete id="groupMemDelete" parameterType="groupVo">
+		DELETE FROM grop_mem_tb 
+		WHERE grop_mem_seq = #{gropMemSeq};
+   </delete>
+  
+   <!-- 그룹명 삭제 -->
+   <delete id="groupDelete" parameterType="groupVo">
+		DELETE FROM grop_tb
+		WHERE grop_seq = #{gropDelSeq}
+   </delete>
+   
+   <!-- 그룹명삭제(그룹멤버전체 삭제) -->
+   <delete id="groupMemAllDelete" parameterType="groupVo">
+		delete from grop_mem_tb
+        WHERE grop_seq = #{gropDelSeq};
+   </delete>
+   
+   <!--그룹명 수정-->
+   <update id="groupUpdateCommit" parameterType="groupVo">
+		UPDATE grop_tb 
+		SET grop_nme = #{updateGropNme}
+    	WHERE grop_seq = #{updateGropSeq};
+   </update>
+</mapper>
+
+
+
+

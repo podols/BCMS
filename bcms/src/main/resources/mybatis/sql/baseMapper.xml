@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="baseMapper">
+	<resultMap id="baseValues" type="baseVo">
+		<result property="newspeedSeq" column="newspeed_seq"/>
+		<result property="sendNme" column="send_nme"/>
+		<result property="nmeCardFirstNme" column="nmecard_firstnme"/>
+		<result property="nmeCardLastNme" column="nmecard_lastnme"/>
+		<result property="newspeedType" column="newspeed_type"/>
+		<result property="receiveSeq" column="receive_seq"/>
+		<result property="newspeedDate" column="newspeed_date"/>
+		<result property="newspeedCount" column="newspeed_seq"/>
+	</resultMap>
+	
+	<select id="newspeedSelect" resultMap="baseValues" parameterType="int">
+		SELECT newspeed_seq
+			,  send_nme
+		    ,  nmecard_firstnme
+		    ,  nmecard_lastnme
+		    ,  newspeed_type
+		FROM newspeed_tb
+		WHERE receive_seq = #{receiveSeq}
+		ORDER BY newspeed_date DESC;
+	</select>
+</mapper>

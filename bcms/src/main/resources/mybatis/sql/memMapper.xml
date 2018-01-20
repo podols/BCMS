@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="memMapper">
+	<resultMap id="memValues" type="memVo">
+		<result property="memSeq" column="mem_seq"/>
+		<result property="memId" column="mem_id"/>
+		<result property="memPw" column="mem_pw"/>
+		<result property="memNme" column="mem_nme"/>
+		<result property="memDepmtNme" column="mem_depmt_nme"/>
+		<result property="memDepmtSeq" column="mem_depmt_seq"/>
+		<result property="memPostnNme" column="mem_postn_nme"/>
+		<result property="memSex" column="mem_sex"/>
+		<result property="memBirth" column="mem_birth"/>
+		<result property="memMobil" column="mem_mobil"/>
+		<result property="memJoinDate" column="mem_join_date"/>
+		<result property="memCompnNme" column="mem_compn_Nme"/>
+		<result property="memCompnSeq" column="mem_compn_seq"/>
+		<result property="memEmail" column="mem_email"/>
+		<result property="idResult" column="id_result"/>
+		<result property="idCount" column="id_count"/>
+	</resultMap>
+	
+	<resultMap id="compnValues" type="compnVo">
+		<result property="compnSeq" column="compn_seq"/>
+		<result property="compnNme" column="compn_nme"/>
+		<result property="depmtSeq" column="depmt_seq"/>
+		<result property="depmtNme" column="depmt_nme"/>
+		<result property="compnNmeCount" column="compn_nme_count"/>
+		<result property="depmtNmeCount" column="depmt_nme_count"/>
+	</resultMap>
+	
+	<select id="confirm" parameterType="memVo" resultType="int">
+		SELECT
+			COUNT(mem_seq)
+		FROM
+		mem_tb
+		WHERE
+			mem_id = #{memId}
+		AND
+			mem_pw = #{memPw};
+	</select>
+	
+	<select id="selectMemInfo" parameterType="memVo" resultMap="memValues">
+		SELECT
+			  mem_seq
+			, mem_id
+			, mem_nme
+		FROM
+		mem_tb
+		WHERE
+			mem_id = #{memId}
+		AND
+			mem_pw = #{memPw};
+	</select>
+	
+	<update id="updateMemInfo" parameterType="memVo">
+		UPDATE
+		mem_tb 
+		SET
+			  mem_pw = #{memPw}
+			, mem_nme = #{memNme}
+ 		WHERE
+ 			mem_seq = #{memSeq};
+	</update>
+	
+	<!--회사 고유값 생성-->
+	<select id="selectCompnSeq" resultType="int">
+		SELECT IFNULL(MAX(compn_seq),0)+1 AS mem_compn_seq FROM compn_tb
+	</select>
+	
+	<!--회사 등록-->
+	<insert id="insertCompn" parameterType="memVo">
+		INSERT 
+		INTO compn_tb(
+			compn_seq
+			,compn_nme
+			,compn_cret_date)
+		VALUE (
+			#{memCompnSeq}
+			,#{memCompnNme}
+			,CURDATE());
+	</insert>
+	
+	<!--부서 고유값 생성-->
+	<select id="selectDepmtSeq" resultType="int">
+		SELECT IFNULL(MAX(depmt_seq),0)+1 AS mem_depmt_seq FROM depmt_tb
+	</select>
+	
+	<!--부서 등록-->
+	<insert id="insertDepmt" parameterType="memVo">
+		INSERT 
+		INTO depmt_tb(
+			depmt_seq
+			,depmt_nme
+			,depmt_cret_date)
+		VALUE (
+			#{memDepmtSeq}
+			,#{memDepmtNme}
+			,CURDATE());
+	</insert>
+	
+	<!--회원 고유값 생성-->
+	<select id="selectMemSeq" resultType="int">
+		SELECT IFNULL(MAX(mem_seq),0)+1 FROM mem_tb
+	</select>
+	
+	<!--회원 가입-->
+	<insert id="insertMembership" parameterType="memVo">
+		INSERT 
+		INTO mem_tb(
+			mem_seq
+			,mem_id
+			,mem_pw
+			,mem_nme
+			,mem_sex
+			,mem_compn_seq
+			,mem_depmt_seq
+			,mem_postn_nme
+			,mem_birth
+			,mem_email
+			,mem_mobil
+			,mem_join_date)
+		VALUE (
+			#{memSeq}
+			,#{memId}
+			,#{memPw}
+			,#{memNme}
+			,#{memSex}
+			,#{memCompnSeq}
+			,#{memDepmtSeq}
+			,#{memPostnNme}
+			,#{memBirth}
+			,concat(#{memEmail1},'@',#{memEmail2})
+			,concat(#{memMobil1},#{memMobil2},#{memMobil3})
+			,CURDATE());
+	</insert>
+	
+	<!--회원에 관한 회사, 부서seq 조회-->
+	<select id="selectCompnDepmtSeq" resultMap="memValues">
+		SELECT 
+			mem_compn_seq
+			,mem_depmt_seq
+		FROM mem_tb
+		WHERE mem_seq = #{memSeq};
+	</select>
+	
+	<!--회원 상세조회-->
+	<select id="memSelectViewForm" resultMap="memValues">
+		SELECT		
+			mem_seq
+			,mem_id
+			,mem_pw
+			,mem_nme
+			,mem_sex
+			,(SELECT compn_nme FROM compn_tb WHERE compn_seq = #{memCompnSeq}) AS mem_compn_nme
+			,(SELECT depmt_nme FROM depmt_tb WHERE depmt_seq = #{memDepmtSeq}) AS mem_depmt_nme
+			,mem_postn_nme
+			,mem_birth
+			,mem_email
+			,mem_mobil
+			,mem_join_date
+		FROM mem_tb
+		WHERE mem_seq = #{memSeq};
+	</select>
+	
+	<!--회원정보 수정-->
+	<update id="updateMembership" parameterType="memVo">
+		UPDATE
+		mem_tb
+		SET 
+			mem_pw = #{memPw}
+			,mem_compn_seq = #{memCompnSeq}
+			,mem_depmt_seq = #{memDepmtSeq}
+			,mem_postn_nme = #{memPostnNme}
+			,mem_birth = #{memBirth}
+			,mem_mobil = CONCAT(#{memMobil1}, #{memMobil2}, #{memMobil3})
+			,mem_email = CONCAT(#{memEmail1},'@', #{memEmail2})
+		WHERE mem_seq = #{memSeq};
+	</update>
+	
+	<!--아이디 중복확인-->
+<!-- 	<select id="idCheck" parameterType="String" resultType="int"> -->
+<!-- 		SELECT	COUNT(mem_id) AS id_result -->
+<!-- 		FROM	mem_tb -->
+<!-- 		WHERE	mem_id = #{memId}; -->
+<!-- 	</select> -->
+	
+		<!--아이디 중복확인 ajax-->
+	<select id="idCheck" parameterType="String" resultType="int">
+		SELECT
+		COUNT(mem_id) AS id_count
+		FROM mem_tb
+		WHERE mem_id = #{memId};
+	</select>
+	<!--회원정보 수정 화면-->
+	
+	<!--회사 조회-->
+	<select id="compnList" parameterType="compnVo" resultMap="compnValues">
+		SELECT compn_seq
+				,compn_nme
+		FROM compn_tb
+		ORDER BY compn_nme ASC;
+	</select>
+	
+	<!--부서 조회-->
+	<select id="depmtList" parameterType="compnVo" resultMap="compnValues">
+		SELECT depmt_seq
+				,depmt_nme
+		FROM depmt_tb
+		ORDER BY depmt_nme ASC;
+	</select>
+	
+	<!--회사 중복확인-->
+	<select id="compnNmeCheck" parameterType="String" resultType="int">
+		SELECT COUNT(compn_nme) AS compn_nme_count
+		FROM compn_tb
+		WHERE compn_nme = #{memCompnNme};
+	</select>
+	
+	<!--부서 중복확인-->
+	<select id="depmtNmeCheck" parameterType="String" resultType="int">
+		SELECT COUNT(depmt_nme) AS depmt_nme_count
+		FROM depmt_tb
+		WHERE depmt_nme = #{memDepmtNme};
+	</select>
+	
+	<!-- 회원 전체조회 -->
+	<select id="selectMemList" resultMap="memValues">
+		SELECT mem_nme, mem_seq
+		FROM mem_tb;
+	</select>	
+</mapper>

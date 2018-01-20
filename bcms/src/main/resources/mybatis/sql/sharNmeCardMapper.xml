@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	<!-- 여기서 부터 끝까지 붙여 넣음 -->
+
+<mapper namespace="sharNmeCardMapper"> 
+	
+	<resultMap id="nmeCardValues" type="nmeCardVo">	<!-- ValueObject의 속성과 DataBase의 column을 연계 시켜준다. -->
+		<result property="cretrSeq" column="cretr_seq"/>
+		<result property="nmeCardSeq" column="nmecard_seq"/>
+		<result property="nmeCardLastNme" column="nmecard_lastnme"/>
+		<result property="nmeCardFirstNme" column="nmecard_firstnme"/>
+		<result property="nmeCardNme" column="nmecard_nme"/>
+		<result property="nmeCardSex" column="nmecard_sex"/>
+		<result property="nmeCardPostNum" column="nmecard_post_num"/>
+		<result property="nmeCardBascAdrs" column="nmecard_basc_adrs"/>
+		<result property="nmeCardDetlAdrs" column="nmecard_detl_adrs"/>
+		<result property="nmeCardAdrs" column="nmecard_adrs"/>
+		<result property="nmeCardMobil" column="nmecard_mobil"/>
+		<result property="nmeCardTel" column="nmecard_tel"/>
+		<result property="nmeCardFax" column="nmecard_fax"/>
+		<result property="nmeCardEmail" column="nmecard_email"/>
+		<result property="nmeCardHompg" column="nmecard_hompg"/>
+		<result property="nmeCardHob" column="nmecard_hob"/>
+		<result property="nmeCardInterst" column="nmecard_interst"/>
+		<result property="nmeCardJobNme" column="nmecard_job_nme"/>
+		<result property="nmeCardPostnNme" column="nmecard_postn_nme"/>
+		<result property="nmeCardCompnSeq" column="nmecard_compn_seq"/>
+		<result property="nmeCardDepmtSeq" column="nmecard_depmt_seq"/>
+		<result property="nmeCardCompnNme" column="nmecard_compn_nme"/>
+		<result property="nmeCardDepmtNme" column="nmecard_depmt_nme"/>
+		<result property="nmeCardSns" column="nmecard_sns"/>
+		<result property="nmeCardMesngr" column="nmecard_mesngr"/>
+		<result property="nmeCardLicns" column="nmecard_licns"/>
+		<result property="nmeCardUseAt" column="nmecard_use_at"/>
+		<result property="nmeCardCretDate" column="nmecard_cret_date"/>
+		<result property="licnsSeq" column="licns_seq"/>
+		<result property="licnsNme" column="licns_nme"/>
+		<result property="licnsType" column="licns_type"/>
+		<result property="licnsCretDate" column="licns_cret_date"/>
+		<result property="licnsHavSeq" column="licns_hav_seq"/>
+		<result property="currentPageNo" column="currentPageNo"/>
+		<result property="nmeCardHistrSeq" column="nmecard_histr_seq"/>
+		<result property="sharType" column="shar_type"/>
+		<result property="sharUseAtBinType" column="shar_use_at_bin_type"/>
+		<result property="memSeq" column="mem_seq"/>
+		<result property="sharSeq" column="shar_seq"/>
+		<result property="sharCretDate" column="shar_cret_date"/>	
+		
+	</resultMap>
+	
+	<resultMap id="nmeCardHistrValues" type="nmeCardHistrVo">
+		<result property="nmeCardHistrSeq" column="nmecard_histr_seq"/>
+		<result property="nmeCardHistrJobNme" column="nmecard_histr_job_nme"/>
+		<result property="nmeCardHistrPostnNme" column="nmecard_histr_postn_nme"/>
+		<result property="nmeCardHistrCompnSeq" column="nmecard_histr_compn_seq"/>
+		<result property="nmeCardHistrDepmtSeq" column="nmecard_histr_depmt_seq"/>
+		<result property="nmeCardHistrCompnNme" column="nmecard_histr_compn_nme"/>
+		<result property="nmeCardHistrDepmtNme" column="nmecard_histr_depmt_nme"/>
+		<result property="nmeCardHistrLastNme" column="nmecard_histr_lastnme"/>
+		<result property="nmeCardHistrFirstNme" column="nmecard_histr_firstnme"/>
+		<result property="nmeCardHistrNme" column="nmecard_histr_nme"/>
+		<result property="nmeCardHistrSex" column="nmecard_histr_sex"/>
+		<result property="nmeCardHistrPostNum" column="nmecard_histr_post_num"/>
+		<result property="nmeCardHistrBascAdrs" column="nmecard_histr_basc_adrs"/>
+		<result property="nmeCardHistrDetlAdrs" column="nmecard_histr_detl_adrs"/>
+		<result property="nmeCardHistrAdrs" column="nmecard_histr_adrs"/>
+		<result property="nmeCardHistrMobil" column="nmecard_histr_mobil"/>
+		<result property="nmeCardHistrTel" column="nmecard_histr_tel"/>
+		<result property="nmeCardHistrFax" column="nmecard_histr_fax"/>
+		<result property="nmeCardHistrEmail" column="nmecard_histr_email"/>
+		<result property="nmeCardHistrHompg" column="nmecard_histr_hompg"/>
+		<result property="nmeCardHistrHob" column="nmecard_histr_hob"/>
+		<result property="nmeCardHistrInterst" column="nmecard_histr_interst"/>
+		<result property="nmeCardSeq" column="nmecard_seq"/>
+		<result property="nmeCardHistrUseAt" column="nmecard_histr_use_at"/>
+		<result property="nmeCardHistrCretDate" column="nmecard_histr_cret_date"/>
+		<result property="nmeCardHistrSns" column="nmecard_histr_sns"/>
+		<result property="nmeCardHistrMesngr" column="nmecard_histr_mesngr"/>
+		<result property="nmeCardHistrCretrSeq" column="nmecard_histr_cretr_seq"/>
+		<result property="nmeCardHistrMemNme" column="nmecard_histr_mem_nme"/>
+		<result property="nmeCardHistrIndex" column="nmecard_histr_index"/>
+		<result property="nmeCardHistrLicns" column="nmecard_histr_licns"/>
+		<result property="nmeCardHistrLicnsSeq" column="nmecard_histr_licns_seq"/>
+		<result property="nmeCardHistrLicnsNme" column="nmecard_histr_licns_nme"/>
+		<result property="currentPageNo" column="currentPageNo"/>
+	</resultMap>
+	
+	<resultMap id="nmeCardComnctnValues" type="comnctnNmeCardVo">
+		<result property="comnctnSeq" column="comnctn_seq"/>
+		<result property="nmeCardSeq" column="nmecard_seq"/>
+		<result property="memSeq" column="mem_seq"/>
+		<result property="memNme" column="mem_nme"/>
+		<result property="comnctnTitl" column="comnctn_titl"/>
+		<result property="comnctnContn" column="comnctn_contn"/>
+		<result property="comnctnType" column="comnctn_type"/>
+		<result property="comnctnCretDate" column="comnctn_cret_date"/>
+		<result property="comnctnPSeq" column="comnctn_pseq"/>
+		<result property="comnctnuseat" column="comnctn_use_at"/>
+		<result property="comnctnAtnd" column="comnctn_atnd"/>
+		<result property="comnctnNoAtnd" column="comnctn_no_atnd"/>
+		<result property="comnctnCretrSeq" column="comnctn_cretr_seq"/>     
+	</resultMap>
+	
+	<resultMap id="sapValues" type="sapVo">
+		<result property="searchBgnDe" column="searchBgnDe"/>
+		<result property="searchEndDe" column="searchEndDe"/>
+		<result property="searchCnd" column="searchCnd"/>
+		<result property="searchWrd" column="searchWrd"/>
+		<result property="searchAry" column="searchAry"/>
+		<result property="currentPageNo" column="currentPageNo"/>
+		<result property="recordCountPerPage" column="recordCountPerPage"/>
+		<result property="pageSize" column="pageSize"/>
+		<result property="totalRecordCount" column="totalRecordCount"/>
+		<result property="totalPageCount" column="totalPageCount"/>
+		<result property="firstRecordIndex" column="firstRecordIndex"/>
+		<result property="lastRecordIndex" column="lastRecordIndex"/>
+		<result property="firstPageNoOnPageList" column="firstPageNoOnPageList"/>
+		<result property="lastPageNoOnPageList" column="lastPageNoOnPageList"/>
+		
+	</resultMap>
+	
+	<resultMap id="comnctnsapValues" type="comnctnSapVo">
+		<result property="comnctnSearchBgnDe" column="comnctnSearchBgnDe"/>
+		<result property="comnctnSearchEndDe" column="comnctnSearchEndDe"/>
+		<result property="comnctnSearchCnd" column="comnctnSearchCnd"/>
+		<result property="comnctnSearchWrd" column="comnctnSearchWrd"/>
+		<result property="comnctnSearchAry" column="comnctnSearchAry"/>
+		<result property="comnctnCurrentPageNo" column="comnctnCurrentPageNo"/>
+		<result property="comnctnRecordCountPerPage" column="comnctnRecordCountPerPage"/>
+		<result property="comnctnPageSize" column="comnctnPageSize"/>
+		<result property="comnctnTotalRecordCount" column="comnctnTotalRecordCount"/>
+		<result property="comnctnTotalPageCount" column="comnctnTotalPageCount"/>
+		<result property="comnctnFirstRecordIndex" column="comnctnFirstRecordIndex"/>
+		<result property="comnctnLastRecordIndex" column="comnctnLastRecordIndex"/>
+		<result property="comnctnFirstPageNoOnPageList" column="comnctnFirstPageNoOnPageList"/>
+		<result property="comnctnLastPageNoOnPageList" column="comnctnLastPageNoOnPageList"/>
+	</resultMap>
+	<!-- 참석자 고유값 조회 -->
+	<select id="selectAtndList" parameterType="comnctnNmeCardVo" resultMap="nmeCardComnctnValues">
+		SELECT a.comnctn_seq
+			, b.mem_seq
+		    , c.mem_nme
+		FROM comnctn_tb a
+		JOIN atnd_hav_tb b ON a.comnctn_seq = b.comnctn_seq
+		JOIN mem_tb c ON b.mem_seq = c.mem_seq
+		WHERE a.comnctn_seq = #{comnctnSeq};
+	</select>
+	
+	<!-- 참석자 등록 -->
+	<insert id="insertAtnd" parameterType="comnctnNmeCardVo">
+		INSERT
+		INTO
+		atnd_hav_tb (
+			atnd_hav_seq
+			, mem_seq
+			, comnctn_seq
+			, atnd_hav_cret_date
+			)
+		VALUES(
+			(SELECT IFNULL(MAX(atnd_hav_seq),0) + 1 AS atnd_hav_seq FROM atnd_hav_tb as l)
+			, #{comnctnAtnd}
+			, #{comnctnSeq}
+			, SYSDATE()
+		);
+	</insert>
+	
+	<!-- 명함 리스트 조회 -->
+	<select id="selectSharNmeCardList" parameterType="nmeCardVo" resultMap="nmeCardValues">
+		SELECT
+			cretr_seq
+			, b.nmecard_seq
+			, concat(nmecard_lastnme, nmecard_firstnme) as 'nmecard_nme'
+			, IFNULL(CASE CHAR_LENGTH(nmecard_mobil)
+					WHEN '11' THEN concat(LEFT(nmecard_mobil,3),'-',SUBSTRING(nmecard_mobil,4,4),'-',RIGHT(nmecard_mobil,4))
+					WHEN '10' THEN concat(LEFT(nmecard_mobil,3),'-',SUBSTRING(nmecarD_mobil,4,3),'-',RIGHT(nmecarD_mobil,4))
+					END, '없음') as 'nmecard_mobil'
+			, IFNULL(CASE LEFT(nmecard_tel,2)
+				WHEN '02' THEN
+							CASE CHAR_LENGTH(nmecard_tel)
+							WHEN '10' THEN concat('02','-',substring(nmecard_tel,3,4),'-',RIGHT(nmecard_tel,4))
+							WHEN '11' THEN concat('02','-',substring(nmecarD_tel,3,3),'-',RIGHT(nmecard_tel,4))
+							END
+				ELSE 
+					CASE CHAR_LENGTH(nmecard_tel)
+						WHEN '10' THEN concat(LEFT(nmecard_tel,3),'-',substring(nmecard_tel,4,3),'-',RIGHT(nmecard_tel,4))
+						WHEN '11' THEN concat(LEFT(nmecard_tel,3),'-',substring(nmecard_tel,4,4),'-',RIGHT(nmecard_tel,4))
+						WHEN '8' THEN concat(LEFT(nmecard_tel,4),'-',substring(nmecard_tel,4,4))
+						END
+				END,'없음') as 'nmecard_tel'
+			, IF(nmecard_email LIKE '%@', '', nmecard_email) as 'nmecard_email'
+			, IFNULL((select compn_nme from compn_tb where compn_seq = b.nmecard_compn_seq),'없음') as 'nmecard_compn_nme'
+			, nmecard_use_at
+			, a.shar_use_at_bin_type
+			, a.shar_Type
+			, a.shar_seq
+			, IF(date(a.shar_cret_date)>date_add(now(), interval-1 day), 'Y', 'N') as 'shar_cret_date'	 
+		FROM
+		shar_tb a
+			LEFT JOIN nmecard_tb as b on b.nmecard_seq = a.nmecard_seq
+		WHERE
+			shar_type = #{sharType}	
+	   		AND
+			shar_use_at_bin_type = #{sharUseAtBinType}
+						
+		<if test="searchCnd == 0">
+	  		AND CONCAT(nmecard_lastnme,nmecard_firstnme) LIKE CONCAT ('%', #{searchWrd},'%')
+		</if>
+		<if test="searchCnd == 1">
+		   AND nmeCard_mobil LIKE CONCAT ('%', #{searchWrd},'%')
+		</if>	
+		<if test="searchCnd == 2">
+		   AND nmeCard_email LIKE CONCAT ('%', #{searchWrd},'%')
+		</if>
+		AND nmecard_cret_date > #{searchBgnDe}
+		<if test="searchEndDe != ''">
+			AND #{searchEndDe} > nmecard_cret_date
+		</if>
+		AND a.mem_seq = ${cretrSeq}
+		ORDER BY
+		<if test="searchAry != 1">
+			nmecard_cret_date DESC
+		</if>
+		<if test="searchAry == 1">
+			nmeCard_nme ASC
+		</if>
+		LIMIT #{recordCountPerPage} OFFSET #{firstRecordIndex};
+	</select>
+	
+	<!-- 명함 레코드 조회 -->
+	<select id="selectSharNmeCardCount" parameterType="nmeCardVo" resultType="int">
+	   SELECT
+	      COUNT(a.nmecard_seq) AS selectNmeCardCount
+	   FROM
+	      shar_tb a
+	      LEFT JOIN nmecard_tb as b on b.nmecard_seq = a.nmecard_seq
+	   WHERE
+	   		shar_type = #{sharType}	
+	   		AND
+	   		shar_use_at_bin_type = #{sharUseAtBinType}
+	   <if test="searchCnd == 0">
+	      AND CONCAT(nmecard_lastnme,nmecard_firstnme) LIKE CONCAT ('%', #{searchWrd},'%')
+	   </if>
+	   <if test="searchCnd == 1">
+	      AND nmeCard_mobil LIKE CONCAT ('%', #{searchWrd},'%')
+	   </if>   
+	   <if test="searchCnd == 2">
+	      AND nmeCard_email LIKE CONCAT ('%', #{searchWrd},'%')
+	   </if>
+	   AND nmecard_cret_date > #{searchBgnDe}
+	   <if test="searchEndDe != ''">
+	      AND #{searchEndDe} > nmecard_cret_date
+	   </if>
+	      AND a.mem_seq = #{cretrSeq}
+	   ;
+	</select>
+	
+	<!--공유명함 상세보기 --> 
+	<select id="selectSharNmeCardView" parameterType="int" resultMap="nmeCardValues">
+		SELECT
+			cretr_seq
+			, a.nmecard_seq
+			, nmecard_lastnme
+			, nmecard_firstnme
+			, concat(nmecard_lastnme, nmecard_firstnme) as 'nmecard_nme'
+			, nmecard_sex
+			, nmecard_post_num
+			, nmecard_basc_adrs
+			, nmecard_detl_adrs
+			, IFNULL(CASE CHAR_LENGTH(nmecard_mobil)
+					WHEN '11' THEN concat(LEFT(nmecard_mobil,3),'-',SUBSTRING(nmecard_mobil,4,4),'-',RIGHT(nmecard_mobil,4))
+					WHEN '10' THEN concat(LEFT(nmecard_mobil,3),'-',SUBSTRING(nmecarD_mobil,4,3),'-',RIGHT(nmecarD_mobil,4))
+					END, '없음') as 'nmecard_mobil'
+			, IFNULL(CASE LEFT(nmecard_tel,2)
+				WHEN '02' THEN
+							CASE CHAR_LENGTH(nmecard_tel)
+							WHEN '10' THEN concat('02','-',substring(nmecard_tel,3,4),'-',RIGHT(nmecard_tel,4))
+							WHEN '9' THEN concat('02','-',substring(nmecarD_tel,3,3),'-',RIGHT(nmecard_tel,4))
+							END
+				ELSE 
+					CASE CHAR_LENGTH(nmecard_tel)
+						WHEN '10' THEN concat(LEFT(nmecard_tel,3),'-',substring(nmecard_tel,4,3),'-',RIGHT(nmecard_tel,4))
+						WHEN '11' THEN concat(LEFT(nmecard_tel,3),'-',substring(nmecard_tel,4,4),'-',RIGHT(nmecard_tel,4))
+						WHEN '8' THEN concat(LEFT(nmecard_tel,4),'-',substring(nmecard_tel,4,4))
+						END
+				END,'없음') as 'nmecard_tel'
+			, IFNULL(CASE LEFT(nmecard_fax,2)
+				WHEN '02' THEN
+							CASE CHAR_LENGTH(nmecard_fax)
+							WHEN '10' THEN concat('02','-',substring(nmecard_fax,3,4),'-',RIGHT(nmecard_fax,4))
+							WHEN '9' THEN concat('02','-',substring(nmecard_fax,3,3),'-',RIGHT(nmecard_fax,4))
+							END
+				ELSE 
+					CASE CHAR_LENGTH(nmecard_fax)
+						WHEN '10' THEN concat(LEFT(nmecard_fax,3),'-',substring(nmecard_fax,4,3),'-',RIGHT(nmecard_fax,4))
+						WHEN '11' THEN concat(LEFT(nmecard_fax,3),'-',substring(nmecard_fax,4,4),'-',RIGHT(nmecard_fax,4))
+						WHEN '8' THEN concat(LEFT(nmecard_fax,4),'-',substring(nmecard_fax,4,4))
+						END
+				END,'없음') as 'nmecard_fax'
+			, IF(nmecard_email LIKE '%@', ' ', nmecard_email) as 'nmecard_email'
+			, nmecard_hompg
+			, nmecard_hob
+			, nmecard_interst
+			, nmecard_job_nme
+			, nmecard_postn_nme
+			, a.nmecard_compn_seq
+			, a.nmecard_depmt_seq
+			, IFNULL((select compn_nme from compn_tb where compn_seq = a.nmecard_compn_seq),'없음') as 'nmecard_compn_nme'
+			, IFNULL((select depmt_nme from depmt_tb where depmt_seq = a.nmecard_depmt_seq),'없음') as 'nmecard_depmt_nme'
+			, IF(nmecard_sns LIKE '%()%', ' ', nmecard_sns) as 'nmecard_sns'
+			, IF(nmecard_mesngr LIKE '%()%', ' ', nmecard_mesngr) as 'nmecard_mesngr'
+			, nmecard_use_at
+			, nmecard_cret_date
+			, IFNULL(GROUP_CONCAT(b.licns_seq),'') AS 'licns_seq'
+			, f.shar_use_at_bin_type
+			, f.shar_type
+		FROM
+		nmecard_tb a
+        LEFT JOIN licns_hav_tb b ON a.nmecard_seq = b.nmecard_seq
+        LEFT JOIN compn_tb c ON a.nmecard_compn_seq = c.compn_seq
+        LEFT JOIN depmt_tb d ON a.nmecard_depmt_seq = d.depmt_seq
+        LEFT JOIN shar_tb f ON a.nmecard_seq = f.nmecard_seq
+		WHERE
+			a.nmecard_seq = #{nmeCardSeq}
+		AND
+			mem_seq = #{memSeq}
+		AND
+			f.shar_Seq = #{sharSeq};
+	</select>
+	
+	<!--  	명함 자격증 고유값 조회  -->
+	<select id="selectLicnsSeq" parameterType="int" resultMap="nmeCardValues">
+		SELECT 
+			b.licns_seq
+			, c.licns_nme
+			, a.nmecard_seq
+		FROM 
+			nmecard_tb a
+		JOIN licns_hav_tb b ON a.nmecard_seq = b.nmecard_seq
+		JOIN licns_tb c ON b.licns_seq = c.licns_seq
+		WHERE
+			a.nmecard_seq = #{nmeCardSeq};
+	</select>
+	
+	<!-- 명함 삭제 -->
+	<update id="deleteSharNmeCard" parameterType="nmeCardVo">
+		UPDATE
+			shar_tb a
+			LEFT JOIN nmecard_tb as b on b.nmecard_seq = a.nmecard_seq
+		SET	
+			  shar_use_at_bin_type = 'B'
+			, shar_type = 'B'
+		WHERE
+			mem_seq = #{memSeq}
+			AND
+			shar_seq = #{sharSeq};
+			
+	</update>
+	
+	<!-- 명함 완전 삭제 -->
+	<update id="deleteSharNmeCardBin" parameterType="nmeCardVo">
+		UPDATE
+			shar_tb a
+			LEFT JOIN nmecard_tb as b on b.nmecard_seq = a.nmecard_seq
+		SET
+			  shar_use_at_bin_type = 'D'
+			, shar_type = 'D'
+		WHERE
+			mem_seq = #{memSeq}
+			AND
+			shar_seq = #{sharSeq};
+	</update>
+	
+	<!-- 명함 복원 -->
+	<update id="recvySharNmeCardBin" parameterType="nmeCardVo">
+		UPDATE
+			shar_tb a
+			LEFT JOIN nmecard_tb as b on b.nmecard_seq = a.nmecard_seq
+		SET		
+			  a.shar_use_at_bin_type = 'N'
+			, a.shar_type = 'Y'
+			, b.nmecard_cret_date = SYSDATE()
+		WHERE
+			mem_seq = #{memSeq}
+			AND
+			shar_seq = #{sharSeq};
+	</update>
+	
+	<!--공유명함 커뮤니케이션 리스트 조회-->
+	<select id="selectSharNmeCardComnctnList" parameterType="comnctnNmeCardVo" resultMap="nmeCardComnctnValues">
+		SELECT
+			  cmt.comnctn_type
+			, cmt.nmecard_seq
+			, cmt.comnctn_titl
+			, mem.mem_nme
+			, cmt.comnctn_cret_date
+			, cmt.comnctn_seq
+			, cmt.comnctn_cretr_seq
+		FROM
+		comnctn_tb AS cmt
+		LEFT JOIN mem_tb AS mem ON cmt.mem_seq = mem.mem_seq
+		WHERE
+			comnctn_use_at = 'Y'
+		AND
+			cmt.nmecard_seq = #{nmeCardSeq}
+		<if test="comnctnType eq 1">
+			AND comnctn_type IN('meeting','memo')   
+		</if>
+		<if test="comnctnType eq 2">
+			AND comnctn_type='meeting'
+		</if>	
+		<if test="comnctnType eq 3">
+			AND comnctn_type='memo'
+		</if>
+		<if test ="comnctnSearchCnd == 0">
+			AND cmt.comnctn_titl LIKE CONCAT ('%', #{comnctnSearchWrd},'%')
+		</if>
+		<if test ="comnctnSearchCnd == 1">
+			AND mem.mem_nme LIKE CONCAT ('%', #{comnctnSearchWrd},'%')
+		</if>
+		ORDER BY cmt.comnctn_cret_date DESC
+		LIMIT #{comnctnRecordCountPerPage} OFFSET #{comnctnFirstRecordIndex}
+		;
+	</select>
+	
+	<!--공유명함 커뮤니케이션 카운트  -->
+	<select id="selectSharNmeCardComnctnCount" parameterType="comnctnNmeCardVo" resultType="int">
+		SELECT
+			COUNT(cmt.comnctn_seq) AS selectNmeCardCount
+		FROM
+		comnctn_tb AS cmt
+		WHERE
+			comnctn_use_at = 'Y'
+		AND cmt.nmecard_seq = #{nmeCardSeq}
+		<if test="comnctnType eq 1">
+			AND  cmt.comnctn_type IN('meeting','memo')   
+		</if>
+		<if test="comnctnType eq 2">
+		   AND  cmt.comnctn_type='meeting'
+		</if>	
+		<if test="comnctnType eq 3">
+		   AND  cmt.comnctn_type='memo'
+		</if>
+		<if test ="comnctnSearchCnd == 0">
+			AND  cmt.comnctn_titl LIKE CONCAT ('%', #{comnctnSearchWrd},'%')
+		</if>
+		<if test ="comnctnSearchCnd == 1">
+			AND mem.mem_nme LIKE CONCAT ('%', #{comnctnSearchWrd},'%')
+		</if>
+		;
+	</select>
+	
+	<!-- 공유명함 커뮤니케이션 삭제 -->
+	<update id="deleteSharNmeCardComnctn" parameterType="int">
+		UPDATE
+			comnctn_tb
+		SET
+			comnctn_use_at = 'N'
+		WHERE
+			comnctn_seq 
+		IN (#{comnctnSeq});
+	</update>
+	
+	<!--공유명함 커뮤니케이션 등록 -->
+	<insert id="insertSharNmeCardComnctn" parameterType="comnctnNmeCardVo">
+		<selectKey keyProperty="comnctnSeq" resultType="int" order="BEFORE">
+			SELECT 
+				IFNULL(MAX(comnctn_seq),0) + 1 AS comnctn_seq
+			FROM comnctn_tb;
+		</selectKey>
+		INSERT INTO comnctn_tb
+			(comnctn_seq
+			, nmecard_seq
+			, mem_seq
+			,comnctn_titl
+			, comnctn_contn
+			, comnctn_type
+			, comnctn_cret_date
+			, comnctn_use_at
+			, comnctn_atnd
+			, comnctn_no_atnd
+			, comnctn_cretr_seq)
+			VALUES(#{comnctnSeq}
+			, #{nmeCardSeq}
+			, #{memSeq}
+			, #{comnctnTitl}
+			, #{comnctnContn}
+			, #{comnctnType}
+			, SYSDATE()
+			, 'Y'
+			, #{comnctnAtnd}
+			, #{comnctnNoAtnd}
+			, #{memSeq});
+	</insert>
+	
+	<!--공유명함 커뮤니케이션 상세조회 -->
+	<select id="selectSharNmeCardComnctnView" parameterType="comnctnNmeCardVo" resultMap="nmeCardComnctnValues">
+		select
+			a.comnctn_seq
+			, IFNULL(group_concat(b.mem_seq),'') as comnctn_atnd
+			, a.comnctn_titl
+			, a.comnctn_type
+			, a.comnctn_no_atnd
+			, a.comnctn_contn
+			, a.comnctn_cretr_seq
+		from comnctn_tb a
+		JOIN atnd_hav_tb b ON a.comnctn_Seq = b.comnctn_seq
+		where a.comnctn_seq = #{comnctnSeq} and a.nmecard_seq = #{nmeCardSeq};
+	</select>
+	
+	<!--공유명함 커뮤니케이션 수정 -->
+	<update id="updateSharNmeCardComnctn" parameterType="comnctnNmeCardVo">
+		UPDATE
+			comnctn_tb
+		SET
+			comnctn_titl
+			= #{comnctnTitl}
+			, comnctn_type 
+			= #{comnctnType}
+			, comnctn_atnd 
+			= #{comnctnAtnd}
+			, comnctn_no_atnd
+			= #{comnctnNoAtnd}
+			, comnctn_contn
+			= #{comnctnContn}
+		WHERE 
+			comnctn_seq
+			= #{comnctnSeq};
+	</update>
+	
+	<!-- 공유명함 뉴스피드등록 -->
+	<insert id ="insertNewSpeedSharComctn" parameterType="comnctnNmeCardVo">
+		INSERT INTO newspeed_tb(newspeed_seq, 
+							         send_nme, 
+							         nmecard_firstnme, 
+							         nmecard_lastnme,
+							         newspeed_type,
+							         newspeed_date,
+							         receive_seq) 
+		SELECT 	(SELECT IFNULL( max(newspeed_seq), 0) FROM newspeed_tb)+@seq := @seq+1 as seq,
+				mem.mem_nme,
+				nmecard.nmecard_firstnme,
+				nmecard.nmecard_lastnme,
+                #{newspeedType},
+                now(),
+                shar.mem_seq
+        FROM shar_tb shar
+			 ,nmecard_tb nmecard
+             ,mem_tb mem
+         		,(SELECT @seq :=0)a
+        WHERE shar.nmecard_seq = nmecard.nmecard_seq
+        AND shar.nmecard_seq = #{nmeCardSeq}
+		AND mem.mem_seq=#{memSeq}
+		AND shar_type ='Y'
+		AND shar.mem_seq != #{memSeq} ;
+	</insert>
+	
+	<!-- 공유명함 공유자 뉴스피드등록 -->
+	<insert id ="insertNewSpeedSharComctnCretr" parameterType="comnctnNmeCardVo">
+<!-- 		<selectKey keyProperty="cretrSeq"> -->
+<!-- 			select b.cretr_seq from shar_tb a -->
+<!-- 	        join nmecard_tb b on a.nmecard_seq = b.nmecard_seq -->
+<!-- 	        where a.nmecard_seq = #{nmeCardSeq} -->
+<!-- 	        group by b.cretr_seq; -->
+<!-- 		</selectKey> -->
+<!-- 		<if test="cretrSeq != #{memSeq}"> -->
+		INSERT INTO newspeed_tb(newspeed_seq, 
+							         send_nme, 
+							         nmecard_firstnme, 
+							         nmecard_lastnme,
+							         newspeed_type,
+							         newspeed_date,
+							         receive_seq)
+		VALUES  
+			((SELECT IFNULL( max(nstb.newspeed_seq), 0)+1 FROM newspeed_tb as nstb),
+			(SELECT mem_nme FROM mem_tb WHERE mem_seq = #{memSeq}),
+			(SELECT nmecard_firstnme FROM nmecard_tb WHERE nmecard_seq = #{nmeCardSeq}),
+			(SELECT nmecard_lastnme FROM nmecard_tb WHERE nmecard_seq = #{nmeCardSeq}),
+			#{newspeedType},
+			now(),
+			(SELECT cretr_seq FROM nmecard_tb WHERE nmecard_seq = #{nmeCardSeq}))
+			;		
+<!-- 		</if>				          -->
+	</insert>
+	
+</mapper>
